@@ -6,8 +6,23 @@
       </h1>
 
       <h3> Dataset stuff </h3>
+      <h4> Table 1088: {{datasetInfo.dataset.label}}  </h4>
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
+
+          <th> {{datasetInfo.dataset.dimension.Konsumgrp.label}} </th>
+          <th> {{datasetInfo.dataset.dimension.Tid.label}} </th>
+          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.KpiIndMnd}} </th>
+          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Manedsendring}} </th>
+          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Tolvmanedersendring}} </th>
+
+          <tr *ngFor="let item of dataModel">
+            <td>{{item.groupName}}</td>
+            <td>{{item.time}}</td>
+            <td>{{item.cpi}}</td>
+            <td>{{item.monthlyChange}}</td>
+            <td>{{item.twelveMonthRate}}</td>
+          </tr>
           
         </table>
       </div>
