@@ -15,7 +15,10 @@ import {DataTableModule} from "angular2-datatable";
 export class AppComponent {
   constructor(private http: Http){}
 
-  datasetUrl = 'http://data.ssb.no/api/v0/dataset/1088.json?lang=en';
+  tableNumber = 1086;
+  tableNumberString = this.tableNumber.toString();
+
+  datasetUrl = 'http://data.ssb.no/api/v0/dataset/'+this.tableNumberString+'.json?lang=en';
   datasetUrl2 = 'https://coconut-cloud-service-dot-sntc-hackathon-vii.appspot.com/api/subscriptions';
 
 
@@ -32,6 +35,8 @@ export class AppComponent {
   datasetInfo = {};
   datasetInfo2 = {};
 
+  numberOfRows;
+
   getJsonFromWebWithAngular2(){
     console.log("reading data began");
 
@@ -42,35 +47,56 @@ export class AppComponent {
   }
 
   convertToDataModel(r: any) {
+    // so the point is that the json that comes from the site is too raw, therefore i decided to make my own datatype
+    // and do procurement on it to make it into a table. may not be the best solution, but i think it's ok
     let size = Math.max(...r.dataset.dimension.size); //wow spread operator
-    console.log('largest number: ' + size);
-    let convertedData = <DatasetTemplate>({
-      groupName: r.dataset.dimension.id[0],
-      time: r.dataset.dimension.Tid.category.label["2016M11"],
-      cpi: r.dataset.value[0],
-      monthlyChange: r.dataset.value[1],
-      twelveMonthRate: r.dataset.value[2],
-    })
+    let sizeValues = r.dataset.value.length;
+    let numberOfRows = sizeValues/3;
+    this.numberOfRows = numberOfRows;
+    console.log('number of values: ' + sizeValues);
+    console.log('number of rows: ' + numberOfRows);
 
-    type NewArrayType = Array<DatasetTemplate>;
-    let newArrayData: NewArrayType = [
-      {
-        groupName: r.dataset.dimension.id[0],
-        time: r.dataset.dimension.Tid.category.label["2016M11"],
-        cpi: r.dataset.value[0],
-        monthlyChange: r.dataset.value[1],
-        twelveMonthRate: r.dataset.value[2],
-      },
-      {
-        groupName: r.dataset.dimension.id[0],
-        time: r.dataset.dimension.Tid.category.label["2016M12"],
-        cpi: r.dataset.value[3],
-        monthlyChange: r.dataset.value[4],
-        twelveMonthRate: r.dataset.value[5],
-      }
-    ];
+    // let convertedData = <DatasetTemplate>({
+    //   groupName: r.dataset.dimension.id[0],
+    //   time: r.dataset.dimension.Tid.category.label["2016M11"],
+    //   cpi: r.dataset.value[0],
+    //   monthlyChange: r.dataset.value[1],
+    //   twelveMonthRate: r.dataset.value[2],
+    // })
 
-    return newArrayData;
+    // type NewArrayType = Array<DatasetTemplate>;
+    // let newArrayData: NewArrayType = [
+    //   {
+    //     groupName: r.dataset.dimension.id[0],
+    //     time: r.dataset.dimension.Tid.category.label["2016M1"+"4"],
+    //     cpi: r.dataset.value[0],
+    //     monthlyChange: r.dataset.value[1],
+    //     twelveMonthRate: r.dataset.value[2],
+    //   },
+    //   {
+    //     groupName: r.dataset.dimension.id[0],
+    //     time: r.dataset.dimension.Tid.category.label["2016M12"],
+    //     cpi: r.dataset.value[3],
+    //     monthlyChange: r.dataset.value[4],
+    //     twelveMonthRate: r.dataset.value[5],
+    //   }
+    // ];
+
+    let dataArray = [];
+    for (let i=0; i < numberOfRows ; i++){
+      let tempType = Object.keys(r.dataset.dimension.Tid.category.index)[i];
+      let convertedDataElement = <DatasetTemplate>({
+        groupName: r.dataset.dimension.id[0],
+        time: r.dataset.dimension.Tid.category.label[tempType],
+        cpi: r.dataset.value[i],
+        monthlyChange: r.dataset.value[i+1],
+        twelveMonthRate: r.dataset.value[i+2],
+      })
+      
+      dataArray.push(convertedDataElement);
+    }
+
+    return dataArray;
   }
 
   // Create the XHR object.
@@ -93,10 +119,6 @@ export class AppComponent {
   // helper method
   getTitle(text){
     return text.match('<title>(.*)?</title>')[1];
-  }
-
-  getContent(){
-    // return this.datasetInfo.dataset.label;
   }
 
   makeCorsRequest(){
