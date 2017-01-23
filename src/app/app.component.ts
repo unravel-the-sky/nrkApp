@@ -15,21 +15,38 @@ import {DataTableModule} from "angular2-datatable";
 export class AppComponent {
   constructor(private http: Http){}
 
+  tableNames = [];
+  tableNumbers = ['1088', '1086', '1100', '45590'];
   tableNumber = 1086;
   tableNumberString = this.tableNumber.toString();
 
   datasetUrl = 'http://data.ssb.no/api/v0/dataset/'+this.tableNumberString+'.json?lang=en';
-  datasetUrl2 = 'https://coconut-cloud-service-dot-sntc-hackathon-vii.appspot.com/api/subscriptions';
+  // datasetUrl2 = 'https://coconut-cloud-service-dot-sntc-hackathon-vii.appspot.com/api/subscriptions';
 
 
   // alright, let's begin. it's gonna be tremendous. 
   // decided to start with: 1088, link: http://data.ssb.no/api/v0/dataset/1088.json?lang=en
   title = 'Hello!';
 
+  label1: string;
+  label2: string;
+  label3: string;
+
+  dataLabels = [];
+
   dataModel = [];
+
 
   ngOnInit(){
     this.getJsonFromWeb(); 
+  }
+
+  getDataOnDemand(dataTableNumber: string){
+    this.tableNumberString = dataTableNumber;
+    console.log('dataset number: ' + dataTableNumber);
+    this.datasetUrl = 'http://data.ssb.no/api/v0/dataset/'+this.tableNumberString+'.json?lang=en';
+    this.dataLabels = [];
+    this.getJsonFromWeb();
   }
 
   datasetInfo = {};
@@ -51,49 +68,53 @@ export class AppComponent {
     // and do procurement on it to make it into a table. may not be the best solution, but i think it's ok
     let size = Math.max(...r.dataset.dimension.size); //wow spread operator
     let sizeValues = r.dataset.value.length;
-    let numberOfRows = sizeValues/3;
+    console.log(r.dataset.dimension.size[0]);
+    let numberOfFirstItem = r.dataset.dimension.size[0];
+    let valueOfLastItem = r.dataset.dimension.size[r.dataset.dimension.size.length-1];
+    console.log('value of last item: ' + valueOfLastItem);
+
+    let numberOfDataRows = (sizeValues/valueOfLastItem)/numberOfFirstItem;
+    let numberOfRows = sizeValues/valueOfLastItem * r.dataset.dimension.size[0];
     this.numberOfRows = numberOfRows;
     console.log('number of values: ' + sizeValues);
-    console.log('number of rows: ' + numberOfRows);
+    console.log('number of data rows: ' + numberOfDataRows);
+    console.log('value of first item: ' + numberOfFirstItem);
 
-    // let convertedData = <DatasetTemplate>({
-    //   groupName: r.dataset.dimension.id[0],
-    //   time: r.dataset.dimension.Tid.category.label["2016M11"],
-    //   cpi: r.dataset.value[0],
-    //   monthlyChange: r.dataset.value[1],
-    //   twelveMonthRate: r.dataset.value[2],
-    // })
+    for (let i = 0 ; i < valueOfLastItem ; i++){
+      let keyForContent = Object.keys(r.dataset.dimension.ContentsCode.category.index)[i];
+      let label = r.dataset.dimension.ContentsCode.category.label[keyForContent];
 
-    // type NewArrayType = Array<DatasetTemplate>;
-    // let newArrayData: NewArrayType = [
-    //   {
-    //     groupName: r.dataset.dimension.id[0],
-    //     time: r.dataset.dimension.Tid.category.label["2016M1"+"4"],
-    //     cpi: r.dataset.value[0],
-    //     monthlyChange: r.dataset.value[1],
-    //     twelveMonthRate: r.dataset.value[2],
-    //   },
-    //   {
-    //     groupName: r.dataset.dimension.id[0],
-    //     time: r.dataset.dimension.Tid.category.label["2016M12"],
-    //     cpi: r.dataset.value[3],
-    //     monthlyChange: r.dataset.value[4],
-    //     twelveMonthRate: r.dataset.value[5],
-    //   }
-    // ];
+      console.log('label name: ' + label)
+      this.dataLabels.push(label);
+    }
+
 
     let dataArray = [];
-    for (let i=0; i < numberOfRows ; i++){
-      let tempType = Object.keys(r.dataset.dimension.Tid.category.index)[i];
-      let convertedDataElement = <DatasetTemplate>({
-        groupName: r.dataset.dimension.id[0],
-        time: r.dataset.dimension.Tid.category.label[tempType],
-        cpi: r.dataset.value[i],
-        monthlyChange: r.dataset.value[i+1],
-        twelveMonthRate: r.dataset.value[i+2],
-      })
-      
-      dataArray.push(convertedDataElement);
+    let k = 0;
+    let contentNumber = 0;
+    for (let i=0; i < numberOfFirstItem ; i++){
+      for (let j=0; j < numberOfDataRows ; j++){
+        let tempType = Object.keys(r.dataset.dimension.Tid.category.index)[j];
+
+        let tempContentCodeName = r.dataset.dimension.id[0];
+        // console.log(tempContentCodeName);
+        let tempTypeForConsumerGroup = Object.keys(r.dataset.dimension[tempContentCodeName].category.index)[i];
+        // console.log(tempTypeForConsumerGroup);
+        let dataToFill = [];
+        for (let a = 0; a < valueOfLastItem ; a++){
+          dataToFill.push(r.dataset.value[k+a]);
+        }
+        let convertedDataElement = <DatasetTemplate>({
+          groupName: r.dataset.dimension[tempContentCodeName].category.label[tempTypeForConsumerGroup],
+          time: r.dataset.dimension.Tid.category.label[tempType],
+          cpi: r.dataset.value[k],
+          monthlyChange: r.dataset.value[k+1],
+          twelveMonthRate: r.dataset.value[k+2],
+          contentData: dataToFill
+        })
+        k = k + valueOfLastItem;
+        dataArray.push(convertedDataElement);
+      }
     }
 
     return dataArray;
@@ -178,7 +199,7 @@ export class AppComponent {
 
     this.dataModel = this.convertToDataModel(this.datasetInfo);
 
-    console.log(this.dataModel);
+    // console.log(this.dataModel);
 
     console.log("fetching completed");
   }

@@ -6,22 +6,36 @@
       </h1>
 
       <h3> Dataset stuff </h3>
-      <h4> Table {{tableNumberString}}: {{datasetInfo.dataset.label}}  </h4>
+      <h4> Select Table Number for Consumer Price Index </h4>
+      <h4> 
+        <label for="tableNumber">Table Number: </label>
+        <select id="tableNumber" name="tableNumber" required [(ngModel)]="tableNumberString" >
+          <option *ngFor="let number of tableNumbers" [ngValue]="number" >
+            {{number}}
+          </option>
+        </select>
+        <button type="submit" class="btn btn-default" (click) = "getDataOnDemand(tableNumberString)"> Refresh </button>
+      </h4>
+      
+      <h4> Table: {{datasetInfo.dataset.label}}  </h4>
       <div class="table-responsive">
         <table class="table table-hover table-bordered" [mfData]="dataModel" #mf="mfDataTable" [mfRowsOnPage]="numberOfRows">
 
-          <th> <mfDefaultSorter by="groupName"> {{datasetInfo.dataset.dimension.Konsumgrp.label}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="groupName"> index </mfDefaultSorter> </th>
           <th> <mfDefaultSorter by="time"> {{datasetInfo.dataset.dimension.Tid.label}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="cpi"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.KpiIndMnd}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="monthlyChange"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Manedsendring}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="twelveMonthRate"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Tolvmanedersendring}} </mfDefaultSorter> </th>
+          <!--<th *ngFor="let contentLabel of dataLabels"> <mfDefaultSorter by="contentData.data"> {{contentLabel}} </mfDefaultSorter> </th>-->
+          <!--<th> <mfDefaultSorter by="cpi"> {{label1}} </mfDefaultSorter> </th>-->
+          <th> <mfDefaultSorter by="cpi"> {{dataLabels[0]}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="monthlyChange"> {{dataLabels[1]}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="twelveMonthRate"> {{dataLabels[2]}}</mfDefaultSorter> </th>
 
           <tr *ngFor="let item of mf.data">
             <td>{{item.groupName}}</td>
             <td>{{item.time}}</td>
-            <td>{{item.cpi}}</td>
-            <td>{{item.monthlyChange}}</td>
-            <td>{{item.twelveMonthRate}}</td>
+            <td *ngFor="let data of item.contentData"> {{data}}</td>
+            <!--<td>{{item.cpi}}</td>-->
+            <!--<td>{{item.monthlyChange}}</td>-->
+            <!--<td>{{item.twelveMonthRate}}</td>-->
           </tr>
           
         </table>
