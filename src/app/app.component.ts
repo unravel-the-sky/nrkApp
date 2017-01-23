@@ -2,7 +2,9 @@ import { Component, Pipe, PipeTransform } from '@angular/core';
 import { Http, Response, RequestOptions, Headers, Request, RequestMethod } from '@angular/http';
 import "rxjs/Rx";
 import { DatasetTemplate } from './datasetTemplate';
-
+import { OrderByPipe } from './app.component.pipe';
+// import { OrderByPipe } from 'fuel-ui/fuel-ui';
+import {DataTableModule} from "angular2-datatable";
 
 @Component({
   selector: 'app-root',

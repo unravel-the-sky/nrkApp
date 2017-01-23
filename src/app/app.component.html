@@ -8,15 +8,15 @@
       <h3> Dataset stuff </h3>
       <h4> Table 1088: {{datasetInfo.dataset.label}}  </h4>
       <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered" [mfData]="dataModel" #mf="mfDataTable" [mfRowsOnPage]="5">
 
-          <th> {{datasetInfo.dataset.dimension.Konsumgrp.label}} </th>
-          <th> {{datasetInfo.dataset.dimension.Tid.label}} </th>
-          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.KpiIndMnd}} </th>
-          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Manedsendring}} </th>
-          <th> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Tolvmanedersendring}} </th>
+          <th> <mfDefaultSorter by="groupName"> {{datasetInfo.dataset.dimension.Konsumgrp.label}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="time"> {{datasetInfo.dataset.dimension.Tid.label}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="cpi"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.KpiIndMnd}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="monthlyChange"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Manedsendring}} </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="twelveMonthRate"> {{datasetInfo.dataset.dimension.ContentsCode.category.label.Tolvmanedersendring}} </mfDefaultSorter> </th>
 
-          <tr *ngFor="let item of dataModel">
+          <tr *ngFor="let item of mf.data">
             <td>{{item.groupName}}</td>
             <td>{{item.time}}</td>
             <td>{{item.cpi}}</td>

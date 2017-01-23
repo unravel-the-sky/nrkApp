@@ -4,15 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
+import { OrderByPipe } from './app.component.pipe';
+import { DataTableModule } from "angular2-datatable";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    OrderByPipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    DataTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
