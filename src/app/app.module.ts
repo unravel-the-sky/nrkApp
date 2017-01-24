@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { OrderByPipe } from './app.component.pipe';
 import { DataTableModule } from "angular2-datatable";
+import { SlimLoadingBarModule } from "ng2-slim-loading-bar";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { DataTableModule } from "angular2-datatable";
     BrowserModule,
     FormsModule,
     HttpModule,
-    DataTableModule
+    DataTableModule,
+    SlimLoadingBarModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -5,6 +5,7 @@ import { DatasetTemplate } from './datasetTemplate';
 import { OrderByPipe } from './app.component.pipe';
 // import { OrderByPipe } from 'fuel-ui/fuel-ui';
 import {DataTableModule} from "angular2-datatable";
+import { SlimLoadingBarService } from "ng2-slim-loading-bar";
 
 @Component({
   selector: 'app-root',
@@ -13,10 +14,11 @@ import {DataTableModule} from "angular2-datatable";
 })
 
 export class AppComponent {
-  constructor(private http: Http){}
+  constructor(private http: Http, 
+              private slimLoadingBarService: SlimLoadingBarService){}
 
   tableNames = [];
-  tableNumbers = ['1088', '1086', '130297', '45590', '95134'];
+  tableNumbers = ['1088', '1086', '130297', '45590', '95134', '1114'];
   tableNumber = 1088;
   tableNumberString = this.tableNumber.toString();
 
@@ -34,17 +36,36 @@ export class AppComponent {
 
   dataModel = [];
 
+  numberOfContentColumns: number;
+
+  startLoading() {
+    this.slimLoadingBarService.start(() => {
+      console.log('Loading complete');
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+  }
+
 
   ngOnInit(){
+    this.startLoading();
     this.getJsonFromWeb(); 
   }
 
   getDataOnDemand(dataTableNumber: string){
+    this.startLoading();
     this.tableNumberString = dataTableNumber;
     console.log('dataset number: ' + dataTableNumber);
     this.datasetUrl = 'http://data.ssb.no/api/v0/dataset/'+this.tableNumberString+'.json?lang=en';
     this.dataLabels = [];
     this.getJsonFromWeb();
+    
   }
 
   datasetInfo = {};
@@ -87,7 +108,8 @@ export class AppComponent {
     }
 
     this.label1 = r.dataset.dimension.id[0];
-
+    
+    this.numberOfContentColumns = valueOfLastItem;
 
     let dataArray = [];
     let k = 0;
@@ -185,6 +207,8 @@ export class AppComponent {
     this.datasetInfo = jsonObject;
 
     this.dataModel = this.convertToDataModel(this.datasetInfo);
+
+    this.completeLoading();
 
     // console.log(this.dataModel);
 

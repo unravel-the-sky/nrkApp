@@ -1,3 +1,4 @@
+<ng2-slim-loading-bar [height]="'4px'"></ng2-slim-loading-bar>
 <div class="container">
   <div class="responsive">
     <div class="jumbotron">
@@ -6,7 +7,7 @@
       </h1>
 
       <h3> Dataset stuff </h3>
-      <h4> Select Table Number for Consumer Price Index </h4>
+      <h4> Select Table Number below: </h4>
       <h4> 
         <label for="tableNumber">Table Number: </label>
         <select id="tableNumber" name="tableNumber" required [(ngModel)]="tableNumberString" >
@@ -17,18 +18,18 @@
         <button type="submit" class="btn btn-default" (click) = "getDataOnDemand(tableNumberString)"> Refresh </button>
       </h4>
       
-      <h4> Table: {{datasetInfo.dataset.label}}  </h4>
+      <h4> {{datasetInfo.dataset.label}}  </h4>
       <div class="table-responsive">
         <table class="table table-hover table-bordered" [mfData]="dataModel" #mf="mfDataTable" [mfRowsOnPage]="numberOfRows">
 
-          <th> <mfDefaultSorter by="groupName"> {{label1}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="time"> {{datasetInfo.dataset.dimension.Tid.label}} </mfDefaultSorter> </th>
+          <th class="col-sm-3"> <mfDefaultSorter by="groupName"> {{label1}} </mfDefaultSorter> </th>
+          <th class="col-sm-3"> <mfDefaultSorter by="time"> {{datasetInfo.dataset.dimension.Tid.label}} </mfDefaultSorter> </th>
           <!--<th *ngFor="let contentLabel of dataLabels"> <mfDefaultSorter by="contentData.data"> {{contentLabel}} </mfDefaultSorter> </th>-->
           <!--<th> <mfDefaultSorter by="cpi"> {{label1}} </mfDefaultSorter> </th>-->
-          <th> <mfDefaultSorter by="cpi"> {{dataLabels[0]}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="monthlyChange"> {{dataLabels[1]}} </mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="twelveMonthRate"> {{dataLabels[2]}}</mfDefaultSorter> </th>
-          <th> <mfDefaultSorter by="newBufferContent"> {{dataLabels[3]}}</mfDefaultSorter> </th>
+          <th *ngIf="numberOfContentColumns > 0"> <mfDefaultSorter by="cpi"> {{dataLabels[0]}} </mfDefaultSorter> </th>
+          <th *ngIf="numberOfContentColumns > 1"> <mfDefaultSorter by="monthlyChange"> {{dataLabels[1]}} </mfDefaultSorter> </th>
+          <th *ngIf="numberOfContentColumns > 2"> <mfDefaultSorter by="twelveMonthRate"> {{dataLabels[2]}}</mfDefaultSorter> </th>
+          <th *ngIf="numberOfContentColumns > 3"> <mfDefaultSorter by="newBufferContent"> {{dataLabels[3]}}</mfDefaultSorter> </th>
 
           <tr *ngFor="let item of mf.data">
             <td>{{item.groupName}}</td>
@@ -44,6 +45,5 @@
 
     </div>
   </div>
-
 
 </div>
