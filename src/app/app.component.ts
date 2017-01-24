@@ -16,13 +16,11 @@ export class AppComponent {
   constructor(private http: Http){}
 
   tableNames = [];
-  tableNumbers = ['1088', '1086', '1100', '45590'];
-  tableNumber = 1086;
+  tableNumbers = ['1088', '1086', '130297', '45590', '95134'];
+  tableNumber = 1088;
   tableNumberString = this.tableNumber.toString();
 
   datasetUrl = 'http://data.ssb.no/api/v0/dataset/'+this.tableNumberString+'.json?lang=en';
-  // datasetUrl2 = 'https://coconut-cloud-service-dot-sntc-hackathon-vii.appspot.com/api/subscriptions';
-
 
   // alright, let's begin. it's gonna be tremendous. 
   // decided to start with: 1088, link: http://data.ssb.no/api/v0/dataset/1088.json?lang=en
@@ -87,6 +85,8 @@ export class AppComponent {
       console.log('label name: ' + label)
       this.dataLabels.push(label);
     }
+
+    this.label1 = r.dataset.dimension.id[0];
 
 
     let dataArray = [];
@@ -155,19 +155,6 @@ export class AppComponent {
       let text = xhr.responseText;
       // let title = text.match('<title>(.*)?</title>')[1];
       var jsonObject = JSON.parse(xhr.responseText);
-      // this.datasetInfo = jsonObject;
-
-      // console.log(this.datasetInfo);
-      // console.log("her er response fra CORS request " + text);
-
-      // var xmlHttp = new XMLHttpRequest();
-      
-      // xmlHttp.open( "GET", this.datasetUrl, false ); // false for synchronous request
-      // xmlHttp.setRequestHeader("Content-Type", "application/json");
-      // xmlHttp.send( null );
-
-      // var jsonObject = JSON.parse(xmlHttp.responseText);
-      // this.datasetInfo = jsonObject;
     }
 
     xhr.onerror = function() {

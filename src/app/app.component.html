@@ -21,13 +21,14 @@
       <div class="table-responsive">
         <table class="table table-hover table-bordered" [mfData]="dataModel" #mf="mfDataTable" [mfRowsOnPage]="numberOfRows">
 
-          <th> <mfDefaultSorter by="groupName"> index </mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="groupName"> {{label1}} </mfDefaultSorter> </th>
           <th> <mfDefaultSorter by="time"> {{datasetInfo.dataset.dimension.Tid.label}} </mfDefaultSorter> </th>
           <!--<th *ngFor="let contentLabel of dataLabels"> <mfDefaultSorter by="contentData.data"> {{contentLabel}} </mfDefaultSorter> </th>-->
           <!--<th> <mfDefaultSorter by="cpi"> {{label1}} </mfDefaultSorter> </th>-->
           <th> <mfDefaultSorter by="cpi"> {{dataLabels[0]}} </mfDefaultSorter> </th>
           <th> <mfDefaultSorter by="monthlyChange"> {{dataLabels[1]}} </mfDefaultSorter> </th>
           <th> <mfDefaultSorter by="twelveMonthRate"> {{dataLabels[2]}}</mfDefaultSorter> </th>
+          <th> <mfDefaultSorter by="newBufferContent"> {{dataLabels[3]}}</mfDefaultSorter> </th>
 
           <tr *ngFor="let item of mf.data">
             <td>{{item.groupName}}</td>
